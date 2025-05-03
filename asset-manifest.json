@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/vanet/static/css/main.e6c13ad2.css",
+    "main.js": "/vanet/static/js/main.d7842820.js",
+    "static/js/453.8ab44547.chunk.js": "/vanet/static/js/453.8ab44547.chunk.js",
+    "index.html": "/vanet/index.html",
+    "main.e6c13ad2.css.map": "/vanet/static/css/main.e6c13ad2.css.map",
+    "main.d7842820.js.map": "/vanet/static/js/main.d7842820.js.map",
+    "453.8ab44547.chunk.js.map": "/vanet/static/js/453.8ab44547.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.d7842820.js"
+  ]
+}
