@@ -547,8 +547,8 @@ const App = () => {
     authDomain: "school-car-8f60b.firebaseapp.com",
     databaseURL: "https://school-car-8f60b-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "school-car-8f60b",
-    storageBucket: "school-car-8f60b.appspot.com", // Corrected
-    messagingSenderId: "318759538145", // Corrected
+    storageBucket: "school-car-8f60b.appspot.com",
+    messagingSenderId: "318759538145",
     appId: "1:318759538145:web:dummyid" // This will be overridden by __app_id
   };
 
@@ -577,6 +577,8 @@ const App = () => {
       } catch (error) {
         console.error("Firebase authentication error:", error);
         setLoginError(`Authentication failed: ${error.message}`);
+      } finally {
+        setIsAuthReady(true); // Ensure auth readiness is set even if there's an error
       }
     };
 
@@ -585,7 +587,6 @@ const App = () => {
     // Set up auth state observer
     const unsubscribe = onAuthStateChanged(authInstance, (currentUser) => {
       setUser(currentUser);
-      setIsAuthReady(true); // Set auth readiness after initial check
       if (currentUser) {
         console.log("User is logged in:", currentUser.email || "Anonymous");
       } else {
@@ -709,6 +710,7 @@ const App = () => {
       if (languageControlIntent) {
         currentLanguageMode = languageControlIntent.metadata.language_mode;
         setLanguagePreference(currentLanguageMode);
+        // Direct language control responses should always be in the specified language
         botResponseText = currentLanguageMode === 'malay' ? languageControlIntent.responses_malay[0] : languageControlIntent.responses[0];
         setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botResponseText }]);
         setIsTyping(false);
@@ -742,17 +744,8 @@ const App = () => {
         botResponseText = matchedIntent.responses_malay[0];
       } else if (currentLanguageMode === 'english' && matchedIntent.responses && matchedIntent.responses.length > 0) {
         botResponseText = matchedIntent.responses[0];
-      } else if (currentLanguageMode === 'bilingual') {
-        const enResponse = matchedIntent.responses && matchedIntent.responses.length > 0 ? matchedIntent.responses[0] : '';
-        const myResponse = matchedIntent.responses_malay && matchedIntent.responses_malay.length > 0 ? matchedIntent.responses_malay[0] : '';
-        if (enResponse && myResponse) {
-          botResponseText = `${enResponse} / ${myResponse}`;
-        } else if (enResponse) {
-          botResponseText = enResponse;
-        } else if (myResponse) {
-          botResponseText = myResponse;
-        }
       }
+      // Removed the 'bilingual' case here as per new requirement: only one language at a time
 
       // Append metadata if available and not handled by LLM
       // NOTE: Metadata appending here is for simple cases only. Complex metadata will be handled by LLM.
@@ -765,12 +758,11 @@ const App = () => {
 
     // Fallback to LLM if no direct response found or if forced for LLM generation
     let languageInstruction = "Answer the user's question clearly and concisely in English only.";
-    if (currentLanguageMode === 'bilingual') {
-      languageInstruction = "Answer the user's question clearly and concisely in **both English and Malay**. For each piece of information, provide the English version first, followed by the Malay translation, separated by ' / '. Ensure all names, titles, and details from the provided UNIMAP Knowledge Base are presented in both languages. If a proper noun does not have a Malay equivalent, embed it directly into the Malay sentence.";
-    } else if (currentLanguageMode === 'malay') {
+    if (currentLanguageMode === 'malay') {
       // Emphasize strict Malay output for LLM when Malay is preferred
       languageInstruction = "Answer the user's question clearly and concisely in **Malay only**. All information, including names, titles, and details from the provided UNIMAP Knowledge Base, must be presented as part of a fully Malay response. If a proper noun does not have a Malay equivalent, embed it directly into the Malay sentence without any English surrounding text. Do not use any English phrases or sentences.";
     }
+    // Removed the 'bilingual' instruction here as per new requirement: only one language at a time
 
     try {
       const prompt = `You are a helpful chatbot providing information about Universiti Malaysia Perlis (UNIMAP).
@@ -807,11 +799,10 @@ Your Answer:`;
       const result = await response.json();
 
       let llmBotResponseText = "I'm sorry, I couldn't get a response from the AI at this moment.";
-      if (currentLanguageMode === 'bilingual') {
-         llmBotResponseText = "I'm sorry, I couldn't get a response from the AI at this moment. / Maaf, saya tidak dapat mendapatkan respons daripada AI pada masa ini.";
-      } else if (currentLanguageMode === 'malay') {
+      if (currentLanguageMode === 'malay') {
          llmBotResponseText = "Maaf, saya tidak dapat mendapatkan respons daripada AI pada masa ini.";
       }
+      // Removed the 'bilingual' fallback message as per new requirement: only one language at a time
 
       if (result.candidates && result.candidates.length > 0 &&
           result.candidates[0].content && result.candidates[0].content.parts &&
@@ -824,11 +815,10 @@ Your Answer:`;
     } catch (error) {
       console.error("Error fetching AI response:", error);
       let errorMessage = `Sorry, there was an error processing your request: ${error.message}`;
-      if (currentLanguageMode === 'bilingual') {
-        errorMessage += ` / Maaf, terdapat ralat semasa memproses permintaan anda: ${error.message}`;
-      } else if (currentLanguageMode === 'malay') {
+      if (currentLanguageMode === 'malay') {
         errorMessage = `Maaf, terdapat ralat semasa memproses permintaan anda: ${error.message}`;
       }
+      // Removed the 'bilingual' error message as per new requirement: only one language at a time
       setMessages((prevMessages) => [
         ...prevMessages,
         { sender: 'bot', text: errorMessage }
@@ -874,15 +864,15 @@ Your Answer:`;
     setVoiceLang(prevLang => {
       const newLang = prevLang === 'en-US' ? 'ms-MY' : 'en-US';
       // Set languagePreference based on the new voice input language
-      // If newLang is Malay, set preference to 'bilingual' to get both English and Malay responses
-      // If newLang is English, set preference to 'english' to get only English responses
-      const newPref = newLang === 'ms-MY' ? 'bilingual' : 'english';
+      // If newLang is Malay, set preference to 'malay' (single language)
+      // If newLang is English, set preference to 'english' (single language)
+      const newPref = newLang === 'ms-MY' ? 'malay' : 'english'; // Changed to 'malay'
       setLanguagePreference(newPref); // Update overall language preference
 
       // Add a system message to the chat confirming the language change
       const confirmationMessage = newLang === 'ms-MY'
-        ? "Baik, saya akan menjawab dalam bahasa Melayu dan Inggeris mulai sekarang." // Changed to reflect bilingual
-        : "Okay, I will respond in English from now on.";
+        ? "Baik, saya akan menjawab dalam bahasa Melayu mulai sekarang." // Changed to single language
+        : "Okay, saya akan menjawab dalam bahasa Inggeris mulai sekarang.";
 
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -1102,6 +1092,3 @@ Your Answer:`;
 };
 
 export default App;
-
-
-///test
