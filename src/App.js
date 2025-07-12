@@ -1,19 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onValue, set } from 'firebase/database';
+import f_app from './firebaseConfig.js'; // Adjust the import path as needed
+import { Logout } from './auth.jsx';
 
-// Firebase configuration object
-// This configuration is used to initialize the Firebase application.
-const firebaseConfig = {
-  apiKey: "AlzaSyBSend0l9xm8Bqzfdm9qC3nnF7ZTVOSrAg",
-  databaseURL: "https://vanet-155c0-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "vanet-155c0",
-};
 
-// Initialize Firebase app with the provided configuration
-const app = initializeApp(firebaseConfig);
-// Get a reference to the Realtime Database service
-const db = getDatabase(app);
+const db = getDatabase(f_app);
 
 const TrafficInterface = () => {
   // State to hold the system status, fetched from Firebase
@@ -150,6 +141,7 @@ const TrafficInterface = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-5 font-inter bg-gray-50 min-h-screen rounded-lg shadow-lg">
+    <Logout />
       <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Traffic Control System</h1>
 
       {/* Mode Toggle Section */}
