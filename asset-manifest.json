@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/vanet/static/css/main.7481346d.css",
-    "main.js": "/vanet/static/js/main.6ed8e84c.js",
+    "main.css": "/vanet/static/css/main.ac941a64.css",
+    "main.js": "/vanet/static/js/main.c1480cb2.js",
     "static/js/453.8ab44547.chunk.js": "/vanet/static/js/453.8ab44547.chunk.js",
     "index.html": "/vanet/index.html",
-    "main.7481346d.css.map": "/vanet/static/css/main.7481346d.css.map",
-    "main.6ed8e84c.js.map": "/vanet/static/js/main.6ed8e84c.js.map",
+    "main.ac941a64.css.map": "/vanet/static/css/main.ac941a64.css.map",
+    "main.c1480cb2.js.map": "/vanet/static/js/main.c1480cb2.js.map",
     "453.8ab44547.chunk.js.map": "/vanet/static/js/453.8ab44547.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7481346d.css",
-    "static/js/main.6ed8e84c.js"
+    "static/css/main.ac941a64.css",
+    "static/js/main.c1480cb2.js"
   ]
 }
