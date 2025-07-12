@@ -3,15 +3,23 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import {
-  RouterProvider,
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
+
+import { RouterProvider, BrowserRouter, Routes, Route } from "react-router-dom";
 
 import ProtectedRoutes from "./ProtectedRoutes";
-import Login from "./login.jsx";
+import { Login } from "./auth.jsx";
+
+// const auth = getAuth()
+//   .projectConfigManager()
+//   .updateProjectConfig({
+//     multiFactorConfig: {
+//       providerConfigs: [
+//         {
+//           state: "ENABLED",
+//         },
+//       ],
+//     },
+//   });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

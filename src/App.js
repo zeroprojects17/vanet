@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onValue } from 'firebase/database';
-
+import f_app from './firebaseConfig'; // Import your Firebase app configuration
+import { Logout } from './auth';
 
 // Initialize Firebase
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_F_API_KEY,
-  databaseURL: "https://vanet-155c0-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "vanet-155c0",
-};
+// const firebaseConfig = {
+//   apiKey: process.env.REACT_APP_F_API_KEY,
+//   databaseURL: "https://vanet-155c0-default-rtdb.asia-southeast1.firebasedatabase.app",
+//   projectId: "vanet-155c0",
+// };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db = getDatabase(f_app);
 
 const TrafficInterface = () => {
   const [systemStatus, setSystemStatus] = useState({
@@ -137,6 +136,7 @@ const TrafficInterface = () => {
       padding: '20px',
       fontFamily: 'Arial, sans-serif'
     }}>
+      <Logout />
       <h1 style={{ textAlign: 'center', color: '#333' }}>Traffic Control System</h1>
       
       <div style={{
